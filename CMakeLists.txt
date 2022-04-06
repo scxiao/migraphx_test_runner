@@ -1,32 +1,18 @@
 cmake_minimum_required(VERSION 3.5)
 project (migraphx_test_runner)
-set(CMAKE_VERBOSE_MAKEFILE on)
 add_definitions(-D__HIP_PLATFORM_HCC__)
 
-#set (MIGRAPHX_FOLDER /home/scxiao/Workplace/projects/AMDMIGraphX)
-#set (MIGRAPHX_FOLDER /home/scxiao/Workplace/projects/migraphx_onnx_backend)
-set (MIGRAPHX_FOLDER /home/scxiao/Workplace/projects/MIGraph)
-#set (MIGRAPHX_BUILD ${MIGRAPHX_FOLDER}/build_debug)
+set (MIGRAPHX_FOLDER ${CMAKE_PREFIX_PATH})
+#set (MIGRAPHX_FOLDER /home/scxiao/Workplace/projects/MIGraph)
 set (MIGRAPHX_BUILD ${MIGRAPHX_FOLDER}/build)
-#set (CMAKE_CXX_COMPILER /opt/rocm-4.3.1/llvm/bin/clang++)
 
-set (DEPS_FOLDER deps_json)
+set (DEPS_FOLDER deps_rocm5.0)
 set (MIGRAPHX_DEPS /home/scxiao/Workplace/projects/MIGraph/${DEPS_FOLDER}/lib
                    /opt/rocm/lib)
 set (CMAKE_CXX_STANDARD 17)
 
-#add_custom_target(
-#    copylibs
-#	COMMAND cp ${MIGRAPHX_BUILD}/src/onnx/libmigraphx_onnx.so          ${MIGRAPHX_LIB_PATH}/.
-#	COMMAND cp ${MIGRAPHX_BUILD}/src/libmigraphx.so                    ${MIGRAPHX_LIB_PATH}/.
-#	COMMAND cp ${MIGRAPHX_BUILD}/src/targets/cpu/libmigraphx_cpu.so    ${MIGRAPHX_LIB_PATH}/.
-#	COMMAND cp ${MIGRAPHX_BUILD}/src/targets/gpu/libmigraphx_gpu.so    ${MIGRAPHX_LIB_PATH}/.
-#	COMMAND cp ${MIGRAPHX_BUILD}/src/targets/gpu/libmigraphx_device.so ${MIGRAPHX_LIB_PATH}/.)
-
-
 include_directories(${MIGRAPHX_FOLDER}/src/api/include
                     /opt/rocm/include)
-
 link_directories(${MIGRAPHX_BUILD}/lib
                  /opt/rocm/hip/lib)
 
@@ -34,11 +20,9 @@ message("cmake_current_src_dir = " ${CMAKE_SOURCE_DIR})
 message("cmake_current_bin_dir = " ${CMAKE_BINARY_DIR})
 
 
-set(CMAKE_PREFIX_PATH /home/scxiao/Workplace/projects/MIGraph/${DEPS_FOLDER})
+set(CMAKE_PREFIX_PATH ${MIGRAPHX_FOLDER}/${DEPS_FOLDER})
 
-#find_package(migraphx REQUIRED)
 find_package(Protobuf REQUIRED)
-
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS onnx.proto)
 add_library(onnx-proto STATIC ${PROTO_SRCS})
